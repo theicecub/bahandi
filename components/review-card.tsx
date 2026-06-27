@@ -1,10 +1,10 @@
 'use client'
 
 import { reviewWriteOff } from '@/app/actions/write-offs'
+import { PhotoGrid } from '@/components/photo-grid'
 import { StatusBadge } from '@/components/status-badge'
 import type { WriteOff } from '@/lib/db/schema'
 import { Check, ChevronDown, ChevronUp, X } from 'lucide-react'
-import Image from 'next/image'
 import { useState } from 'react'
 
 export function ReviewCard({ item }: { item: WriteOff }) {
@@ -46,11 +46,7 @@ export function ReviewCard({ item }: { item: WriteOff }) {
             <p><span className="text-muted-foreground">Дата: </span>{new Date(item.createdAt).toLocaleString('ru-RU')}</p>
           </div>
 
-          {item.photoUrl && (
-            <div className="relative h-48 rounded-lg overflow-hidden">
-              <Image src={item.photoUrl} alt="Фото" fill className="object-cover" />
-            </div>
-          )}
+          <PhotoGrid photoUrl={item.photoUrl} />
 
           {item.reviewerNote && (
             <div className="bg-muted rounded-lg px-3 py-2 text-sm">

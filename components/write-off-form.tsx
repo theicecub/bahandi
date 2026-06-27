@@ -5,6 +5,15 @@ import { Camera, X } from 'lucide-react'
 import Image from 'next/image'
 import { useMemo, useRef, useState } from 'react'
 
+const MAX_PHOTOS = 5
+
+type PhotoItem = {
+  id: string
+  preview: string
+  url?: string
+  uploading: boolean
+}
+
 const OUTLETS = [
   'Bahandi Шахтеров — Караганда, проспект Шахтеров, 82/3 (киоск)',
   'Bahandi Магнум Жетысу — Алматы, Жетысу-3 микрорайон, 1г/3 (киоск)',
@@ -116,9 +125,7 @@ export function WriteOffForm() {
   const [deductionType, setDeductionType] = useState<'no_deduction' | 'with_deduction'>('no_deduction')
   const [deductedEmployeeName, setDeductedEmployeeName] = useState('')
   const [reason, setReason] = useState('')
-  const [photoUrl, setPhotoUrl] = useState('')
-  const [photoPreview, setPhotoPreview] = useState('')
-  const [uploading, setUploading] = useState(false)
+  const [photos, setPhotos] = useState<PhotoItem[]>([])
   const [submitting, setSubmitting] = useState(false)
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState('')
@@ -133,38 +140,68 @@ export function WriteOffForm() {
     setOutletName('')
   }
 
-  async function handlePhoto(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0]
-    if (!file) return
-    setPhotoPreview(URL.createObjectURL(file))
-    setUploading(true)
-    try {
-      const fd = new FormData()
-      fd.append('file', file)
-      const res = await fetch('/api/upload', { method: 'POST', body: fd })
-      const data = await res.json()
-      setPhotoUrl(data.url)
-    } finally {
-      setUploading(false)
+  async function handlePhotos(e: React.ChangeEvent<HTMLInputElement>) {
+    const files = Array.from(e.target.files ?? [])
+    e.target.value = ''
+    if (files.length === 0) return
+
+    const availableSlots = MAX_PHOTOS - photos.length
+    const selectedFiles = files.slice(0, availableSlots)
+    if (selectedFiles.length === 0) {
+      setError(`Можно прикрепить не больше ${MAX_PHOTOS} фото`)
+      return
     }
+    setError(files.length > availableSlots ? `Добавлено только ${availableSlots} фото из ${files.length}` : '')
+
+    const nextPhotos = selectedFiles.map((file, index) => ({
+      id: `${Date.now()}-${index}-${file.name}`,
+      preview: URL.createObjectURL(file),
+      uploading: true,
+    }))
+
+    setPhotos(current => [...current, ...nextPhotos])
+
+    await Promise.all(nextPhotos.map(async (photo, index) => {
+      try {
+        const fd = new FormData()
+        fd.append('file', selectedFiles[index])
+        const res = await fetch('/api/upload', { method: 'POST', body: fd })
+        if (!res.ok) throw new Error('Upload failed')
+        const data = await res.json()
+        setPhotos(current => current.map(item => (
+          item.id === photo.id ? { ...item, url: data.url, uploading: false } : item
+        )))
+      } catch {
+        setPhotos(current => current.filter(item => item.id !== photo.id))
+        URL.revokeObjectURL(photo.preview)
+        setError('Не удалось загрузить одно из фото')
+      }
+    }))
+  }
+
+  function removePhoto(photo: PhotoItem) {
+    URL.revokeObjectURL(photo.preview)
+    setPhotos(current => current.filter(item => item.id !== photo.id))
   }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (reason.length < 10) { setError('Комментарий минимум 10 символов'); return }
     if (deductionType === 'with_deduction' && !deductedEmployeeName) { setError('Выберите сотрудника'); return }
+    const photoUrls = photos.map(photo => photo.url).filter((url): url is string => Boolean(url))
     setError('')
     setSubmitting(true)
     try {
       await createWriteOff({
         outletName, productName, quantity, deductionType,
         deductedEmployeeName: deductionType === 'with_deduction' ? deductedEmployeeName : undefined,
-        reason, photoUrl: photoUrl || undefined,
+        reason, photoUrl: photoUrls.length > 0 ? JSON.stringify(photoUrls) : undefined,
       })
       setSuccess(true)
       setSelectedCity(''); setOutletName(''); setProductName(''); setQuantity(1)
       setDeductionType('no_deduction'); setDeductedEmployeeName('')
-      setReason(''); setPhotoUrl(''); setPhotoPreview('')
+      photos.forEach(photo => URL.revokeObjectURL(photo.preview))
+      setReason(''); setPhotos([])
       setTimeout(() => setSuccess(false), 3000)
     } catch {
       setError('Ошибка при отправке')
@@ -183,21 +220,34 @@ export function WriteOffForm() {
 
       {/* Photo */}
       <div>
-        <label className="block text-sm font-medium mb-2">Фото продукции</label>
-        <input ref={fileRef} type="file" accept="image/*" capture="environment" className="hidden" onChange={handlePhoto} />
-        {photoPreview ? (
-          <div className="relative w-full h-48 rounded-xl overflow-hidden border border-border">
-            <Image src={photoPreview} alt="Фото" fill className="object-cover" />
-            <button type="button" onClick={() => { setPhotoPreview(''); setPhotoUrl('') }}
-              className="absolute top-2 right-2 bg-black/60 rounded-full p-1 text-white">
-              <X size={16} />
-            </button>
+        <div className="flex items-center justify-between gap-3 mb-2">
+          <label className="block text-sm font-medium">Фото продукции</label>
+          <span className="text-xs text-muted-foreground">{photos.length} / {MAX_PHOTOS}</span>
+        </div>
+        <input ref={fileRef} type="file" accept="image/*" capture="environment" multiple className="hidden" onChange={handlePhotos} />
+        {photos.length > 0 && (
+          <div className="grid grid-cols-2 gap-2 mb-2">
+            {photos.map(photo => (
+              <div key={photo.id} className="relative h-32 rounded-xl overflow-hidden border border-border bg-muted">
+                <Image src={photo.preview} alt="Фото" fill className="object-cover" />
+                {photo.uploading && (
+                  <div className="absolute inset-0 bg-black/45 flex items-center justify-center text-white text-sm font-medium">
+                    Загрузка...
+                  </div>
+                )}
+                <button type="button" onClick={() => removePhoto(photo)}
+                  className="absolute top-2 right-2 bg-black/60 rounded-full p-1 text-white">
+                  <X size={16} />
+                </button>
+              </div>
+            ))}
           </div>
-        ) : (
+        )}
+        {photos.length < MAX_PHOTOS && (
           <button type="button" onClick={() => fileRef.current?.click()}
             className="w-full h-32 rounded-xl border-2 border-dashed border-border flex flex-col items-center justify-center gap-2 text-muted-foreground">
             <Camera size={28} />
-            <span className="text-sm">{uploading ? 'Загрузка...' : 'Прикрепить фото'}</span>
+            <span className="text-sm">Прикрепить фото</span>
           </button>
         )}
       </div>
@@ -285,7 +335,7 @@ export function WriteOffForm() {
 
       {error && <p className="text-destructive text-sm">{error}</p>}
 
-      <button type="submit" disabled={submitting || uploading}
+      <button type="submit" disabled={submitting || photos.some(photo => photo.uploading)}
         className="w-full bg-primary text-primary-foreground rounded-xl py-4 text-base font-semibold disabled:opacity-50">
         {submitting ? 'Отправка...' : 'Отправить заявку'}
       </button>

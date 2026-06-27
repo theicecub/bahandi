@@ -1,10 +1,10 @@
 import { auth } from '@/lib/auth'
 import { getMyWriteOffs } from '@/app/actions/write-offs'
 import { NavBar } from '@/components/nav-bar'
+import { PhotoGrid } from '@/components/photo-grid'
 import { StatusBadge } from '@/components/status-badge'
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
-import Image from 'next/image'
 
 export default async function HistoryPage() {
   const session = await auth.api.getSession({ headers: await headers() })
@@ -42,11 +42,9 @@ export default async function HistoryPage() {
 
                 <p className="text-sm text-muted-foreground line-clamp-2">{item.reason}</p>
 
-                {item.photoUrl && (
-                  <div className="mt-3 relative h-32 rounded-lg overflow-hidden">
-                    <Image src={item.photoUrl} alt="Фото" fill className="object-cover" />
-                  </div>
-                )}
+                <div className="mt-3">
+                  <PhotoGrid photoUrl={item.photoUrl} compact />
+                </div>
 
                 {item.reviewerNote && (
                   <div className="mt-3 bg-muted rounded-lg px-3 py-2 text-sm">
