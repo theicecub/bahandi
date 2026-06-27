@@ -1,0 +1,67 @@
+import { auth } from '@/lib/auth'
+import { getMyWriteOffs } from '@/app/actions/write-offs'
+import { NavBar } from '@/components/nav-bar'
+import { StatusBadge } from '@/components/status-badge'
+import { headers } from 'next/headers'
+import { redirect } from 'next/navigation'
+import Image from 'next/image'
+
+export default async function HistoryPage() {
+  const session = await auth.api.getSession({ headers: await headers() })
+  if (!session?.user) redirect('/sign-in')
+
+  const items = await getMyWriteOffs()
+
+  return (
+    <div className="min-h-screen bg-background">
+      <NavBar user={session.user} />
+      <main className="max-w-lg mx-auto px-4 py-6">
+        <h1 className="text-xl font-bold mb-6">История списаний</h1>
+
+        {items.length === 0 ? (
+          <div className="text-center py-16 text-muted-foreground">
+            <p className="text-4xl mb-3">📋</p>
+            <p>Заявок пока нет</p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {items.map(item => (
+              <div key={item.id} className="bg-card border border-border rounded-xl p-4">
+                <div className="flex items-start justify-between gap-3 mb-2">
+                  <div className="flex-1 min-w-0">
+                    <p className="font-semibold truncate">{item.productName}</p>
+                    <p className="text-sm text-muted-foreground">{item.outletName}</p>
+                  </div>
+                  <StatusBadge status={item.status} />
+                </div>
+
+                <div className="flex items-center gap-4 text-sm text-muted-foreground mb-2">
+                  <span>Кол-во: <strong className="text-foreground">{item.quantity}</strong></span>
+                  <span>{item.deductionType === 'with_deduction' ? 'С удержанием' : 'Без удержания'}</span>
+                </div>
+
+                <p className="text-sm text-muted-foreground line-clamp-2">{item.reason}</p>
+
+                {item.photoUrl && (
+                  <div className="mt-3 relative h-32 rounded-lg overflow-hidden">
+                    <Image src={item.photoUrl} alt="Фото" fill className="object-cover" />
+                  </div>
+                )}
+
+                {item.reviewerNote && (
+                  <div className="mt-3 bg-muted rounded-lg px-3 py-2 text-sm">
+                    <span className="font-medium">Ответ проверяющего: </span>{item.reviewerNote}
+                  </div>
+                )}
+
+                <p className="text-xs text-muted-foreground mt-3">
+                  {new Date(item.createdAt).toLocaleString('ru-RU')}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
+      </main>
+    </div>
+  )
+}
