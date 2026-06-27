@@ -3,7 +3,7 @@
 import { createWriteOff } from '@/app/actions/write-offs'
 import { Camera, X } from 'lucide-react'
 import Image from 'next/image'
-import { useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 
 const OUTLETS = [
   'Bahandi Шахтеров — Караганда, проспект Шахтеров, 82/3 (киоск)',
@@ -100,7 +100,16 @@ const EMPLOYEES = [
   'Кузнецова Елена', 'Смирнов Дмитрий',
 ]
 
+const OUTLET_SEPARATOR = ' \u2014 '
+
+function getOutletCity(outlet: string) {
+  return outlet.split(OUTLET_SEPARATOR)[1]?.split(',')[0]?.trim() ?? ''
+}
+
+const CITIES = Array.from(new Set(OUTLETS.map(getOutletCity).filter(Boolean))).sort((a, b) => a.localeCompare(b))
+
 export function WriteOffForm() {
+  const [selectedCity, setSelectedCity] = useState('')
   const [outletName, setOutletName] = useState('')
   const [productName, setProductName] = useState('')
   const [quantity, setQuantity] = useState(1)
@@ -114,6 +123,15 @@ export function WriteOffForm() {
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState('')
   const fileRef = useRef<HTMLInputElement>(null)
+  const cityOutlets = useMemo(
+    () => OUTLETS.filter(outlet => getOutletCity(outlet) === selectedCity),
+    [selectedCity],
+  )
+
+  function handleCityChange(city: string) {
+    setSelectedCity(city)
+    setOutletName('')
+  }
 
   async function handlePhoto(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
@@ -144,7 +162,7 @@ export function WriteOffForm() {
         reason, photoUrl: photoUrl || undefined,
       })
       setSuccess(true)
-      setOutletName(''); setProductName(''); setQuantity(1)
+      setSelectedCity(''); setOutletName(''); setProductName(''); setQuantity(1)
       setDeductionType('no_deduction'); setDeductedEmployeeName('')
       setReason(''); setPhotoUrl(''); setPhotoPreview('')
       setTimeout(() => setSuccess(false), 3000)
@@ -184,13 +202,23 @@ export function WriteOffForm() {
         )}
       </div>
 
+      {/* City */}
+      <div>
+        <label className="block text-sm font-medium mb-2">{"\u0413\u043e\u0440\u043e\u0434"} <span className="text-destructive">*</span></label>
+        <select required value={selectedCity} onChange={e => handleCityChange(e.target.value)}
+          className="w-full border border-border rounded-lg px-4 py-3 text-base bg-background focus:outline-none focus:ring-2 focus:ring-primary">
+          <option value="">{"\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u0433\u043e\u0440\u043e\u0434"}</option>
+          {CITIES.map(city => <option key={city}>{city}</option>)}
+        </select>
+      </div>
+
       {/* Outlet */}
       <div>
         <label className="block text-sm font-medium mb-2">Торговая точка <span className="text-destructive">*</span></label>
-        <select required value={outletName} onChange={e => setOutletName(e.target.value)}
-          className="w-full border border-border rounded-lg px-4 py-3 text-base bg-background focus:outline-none focus:ring-2 focus:ring-primary">
+        <select required value={outletName} onChange={e => setOutletName(e.target.value)} disabled={!selectedCity}
+          className="w-full border border-border rounded-lg px-4 py-3 text-base bg-background focus:outline-none focus:ring-2 focus:ring-primary disabled:cursor-not-allowed disabled:opacity-60">
           <option value="">Выберите точку</option>
-          {OUTLETS.map(o => <option key={o}>{o}</option>)}
+          {cityOutlets.map(o => <option key={o}>{o}</option>)}
         </select>
       </div>
 
