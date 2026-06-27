@@ -81,7 +81,7 @@ const OUTLETS = [
   'Bahandi Петрова — Астана, ул. Алексея Петрова, 22г (1 этаж)',
   'Bahandi Мерей — Алматы, проспект Суюнбая, 2/Б (киоск)',
   'Bahandi Тастак — Алматы, Тастак-3 микрорайон, ул. Толе би, 229/3 (киоск)',
-  'Bahandi Весновка — Алматы, Коктем-2 микрорайон, 22 (киоск)',
+  'Bahandi Вес��овка — Алматы, Коктем-2 микрорайон, 22 (киоск)',
   'Bahandi Айнабулак — Алматы, Айнабулак 2 микрорайон, 82/4 (киоск)',
   'Bahandi Глобус Фудкорт — Алматы, Абая проспект, 109в (ТРЦ Globus, 2 этаж)',
   'Bahandi Динара — Шымкент, проспект Республики, 40/1 (1 этаж)',
@@ -210,11 +210,13 @@ export function WriteOffForm() {
     }
   }
 
+  const fieldCls = "w-full border border-border rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-ring"
+
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       {success && (
-        <div className="bg-green-50 border border-green-200 text-green-800 rounded-lg px-4 py-3 text-sm font-medium dark:bg-green-500/15 dark:border-green-500/25 dark:text-green-300">
-          Заявка отправлена на проверку
+        <div className="bg-accent/15 border border-accent/30 text-accent dark:text-accent rounded-lg px-4 py-3 text-sm font-semibold">
+          Заявка отправлена на проверку ✓
         </div>
       )}
 
@@ -256,7 +258,7 @@ export function WriteOffForm() {
       <div>
         <label className="block text-sm font-medium mb-2">{"\u0413\u043e\u0440\u043e\u0434"} <span className="text-destructive">*</span></label>
         <select required value={selectedCity} onChange={e => handleCityChange(e.target.value)}
-          className="w-full border border-border rounded-lg px-4 py-3 text-base bg-background focus:outline-none focus:ring-2 focus:ring-primary">
+          className={fieldCls}>
           <option value="">{"\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u0433\u043e\u0440\u043e\u0434"}</option>
           {CITIES.map(city => <option key={city}>{city}</option>)}
         </select>
@@ -266,7 +268,7 @@ export function WriteOffForm() {
       <div>
         <label className="block text-sm font-medium mb-2">Торговая точка <span className="text-destructive">*</span></label>
         <select required value={outletName} onChange={e => setOutletName(e.target.value)} disabled={!selectedCity}
-          className="w-full border border-border rounded-lg px-4 py-3 text-base bg-background focus:outline-none focus:ring-2 focus:ring-primary disabled:cursor-not-allowed disabled:opacity-60">
+          className={`${fieldCls} disabled:cursor-not-allowed disabled:opacity-60`}>
           <option value="">Выберите точку</option>
           {cityOutlets.map(o => <option key={o}>{o}</option>)}
         </select>
@@ -276,7 +278,7 @@ export function WriteOffForm() {
       <div>
         <label className="block text-sm font-medium mb-2">Продукт <span className="text-destructive">*</span></label>
         <input required value={productName} onChange={e => setProductName(e.target.value)}
-          className="w-full border border-border rounded-lg px-4 py-3 text-base bg-background focus:outline-none focus:ring-2 focus:ring-primary"
+          className={fieldCls}
           placeholder="Например: котлета, булочка, томат..." />
       </div>
 
@@ -285,10 +287,10 @@ export function WriteOffForm() {
         <label className="block text-sm font-medium mb-2">Количество <span className="text-destructive">*</span></label>
         <div className="flex items-center gap-3">
           <button type="button" onClick={() => setQuantity(q => Math.max(1, q - 1))}
-            className="w-12 h-12 rounded-lg border border-border text-xl font-bold flex items-center justify-center">−</button>
+            className="w-12 h-12 rounded-xl border border-border text-xl font-bold flex items-center justify-center hover:bg-secondary transition-colors">−</button>
           <span className="text-xl font-semibold w-8 text-center">{quantity}</span>
           <button type="button" onClick={() => setQuantity(q => q + 1)}
-            className="w-12 h-12 rounded-lg border border-border text-xl font-bold flex items-center justify-center">+</button>
+            className="w-12 h-12 rounded-xl border border-border text-xl font-bold flex items-center justify-center hover:bg-secondary transition-colors">+</button>
         </div>
       </div>
 
@@ -314,7 +316,7 @@ export function WriteOffForm() {
         <div>
           <label className="block text-sm font-medium mb-2">Сотрудник <span className="text-destructive">*</span></label>
           <select value={deductedEmployeeName} onChange={e => setDeductedEmployeeName(e.target.value)}
-            className="w-full border border-border rounded-lg px-4 py-3 text-base bg-background focus:outline-none focus:ring-2 focus:ring-primary">
+            className={fieldCls}>
             <option value="">Выберите сотрудника</option>
             {EMPLOYEES.map(emp => <option key={emp}>{emp}</option>)}
           </select>
@@ -328,7 +330,7 @@ export function WriteOffForm() {
           <span className="text-muted-foreground font-normal ml-1">(мин. 10 символов)</span>
         </label>
         <textarea required value={reason} onChange={e => setReason(e.target.value)} rows={3}
-          className="w-full border border-border rounded-lg px-4 py-3 text-base bg-background focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+          className={`${fieldCls} resize-none`}
           placeholder="Опишите причину списания..." />
         <p className="text-xs text-muted-foreground mt-1">{reason.length} / 10+</p>
       </div>
@@ -336,7 +338,7 @@ export function WriteOffForm() {
       {error && <p className="text-destructive text-sm">{error}</p>}
 
       <button type="submit" disabled={submitting || photos.some(photo => photo.uploading)}
-        className="w-full bg-primary text-primary-foreground rounded-xl py-4 text-base font-semibold disabled:opacity-50">
+        className="w-full bg-primary text-primary-foreground rounded-xl py-4 text-base font-bold tracking-wide disabled:opacity-50 transition-opacity">
         {submitting ? 'Отправка...' : 'Отправить заявку'}
       </button>
     </form>

@@ -58,15 +58,15 @@ export function ReviewCard({ item }: { item: WriteOff }) {
           {item.status === 'pending' && (
             <div className="space-y-2 pt-1">
               <textarea value={note} onChange={e => setNote(e.target.value)} rows={2}
-                className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-background focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+                className="w-full border border-border rounded-xl px-3 py-2 text-sm bg-card focus:outline-none focus:ring-2 focus:ring-ring resize-none"
                 placeholder="Примечание (необязательно)..." />
               <div className="grid grid-cols-2 gap-2">
                 <button onClick={() => handle('rejected')} disabled={loading}
-                  className="flex items-center justify-center gap-2 py-3 rounded-lg border border-destructive text-destructive font-medium text-sm disabled:opacity-50">
+                  className="flex items-center justify-center gap-2 py-3 rounded-xl border border-destructive text-destructive font-semibold text-sm disabled:opacity-50 hover:bg-destructive/10 transition-colors">
                   <X size={16} /> Отклонить
                 </button>
                 <button onClick={() => handle('approved')} disabled={loading}
-                  className="flex items-center justify-center gap-2 py-3 rounded-lg bg-primary text-primary-foreground font-medium text-sm disabled:opacity-50">
+                  className="flex items-center justify-center gap-2 py-3 rounded-xl bg-accent text-accent-foreground font-semibold text-sm disabled:opacity-50 hover:opacity-90 transition-opacity">
                   <Check size={16} /> Подтвердить
                 </button>
               </div>

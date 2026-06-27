@@ -57,55 +57,57 @@ export function AuthForm({ mode }: { mode: 'sign-in' | 'sign-up' }) {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {mode === 'sign-up' && (
+        <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {mode === 'sign-up' && (
+              <div>
+                <label className="block text-sm font-medium mb-1.5">Имя</label>
+                <input
+                  type="text"
+                  required
+                  value={name}
+                  onChange={e => setName(e.target.value)}
+                  className="w-full border border-border rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-ring"
+                  placeholder="Иван Иванов"
+                />
+              </div>
+            )}
             <div>
-              <label className="block text-sm font-medium mb-1">Имя</label>
+              <label className="block text-sm font-medium mb-1.5">Email</label>
               <input
-                type="text"
+                type="email"
                 required
-                value={name}
-                onChange={e => setName(e.target.value)}
-                className="w-full border border-border rounded-lg px-4 py-3 text-base bg-background focus:outline-none focus:ring-2 focus:ring-primary"
-                placeholder="Иван Иванов"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                className="w-full border border-border rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-ring"
+                placeholder="name@example.com"
               />
             </div>
-          )}
-          <div>
-            <label className="block text-sm font-medium mb-1">Email</label>
-            <input
-              type="email"
-              required
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              className="w-full border border-border rounded-lg px-4 py-3 text-base bg-background focus:outline-none focus:ring-2 focus:ring-primary"
-              placeholder="name@example.com"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">Пароль</label>
-            <input
-              type="password"
-              required
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              className="w-full border border-border rounded-lg px-4 py-3 text-base bg-background focus:outline-none focus:ring-2 focus:ring-primary"
-              placeholder="••••••••"
-            />
-          </div>
+            <div>
+              <label className="block text-sm font-medium mb-1.5">Пароль</label>
+              <input
+                type="password"
+                required
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                className="w-full border border-border rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-ring"
+                placeholder="••••••••"
+              />
+            </div>
 
-          {error && <p className="text-destructive text-sm">{error}</p>}
+            {error && <p className="text-destructive text-sm">{error}</p>}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-primary text-primary-foreground rounded-lg py-3 text-base font-semibold disabled:opacity-50"
-          >
-            {loading ? 'Загрузка...' : mode === 'sign-in' ? 'Войти' : 'Зарегистрироваться'}
-          </button>
-        </form>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-primary text-primary-foreground rounded-xl py-3 text-base font-semibold disabled:opacity-50 mt-2"
+            >
+              {loading ? 'Загрузка...' : mode === 'sign-in' ? 'Войти' : 'Зарегистрироваться'}
+            </button>
+          </form>
+        </div>
 
-        <p className="text-center text-sm text-muted-foreground mt-6">
+        <p className="text-center text-sm text-muted-foreground mt-5">
           {mode === 'sign-in' ? (
             <>Нет аккаунта? <Link href="/sign-up" className="text-primary font-medium">Зарегистрироваться</Link></>
           ) : (

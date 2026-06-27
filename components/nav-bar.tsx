@@ -28,7 +28,7 @@ export function NavBar({ user }: { user: User }) {
   const isReviewer = user.role === 'reviewer'
 
   return (
-    <header className="border-b border-border bg-card sticky top-0 z-10">
+    <header className="border-b border-border bg-card sticky top-0 z-10 shadow-sm">
       <div className="max-w-lg mx-auto px-4 h-14 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2 min-w-0">
           <Image
@@ -39,33 +39,25 @@ export function NavBar({ user }: { user: User }) {
           />
         </Link>
 
-        <nav className="flex items-center gap-1">
-          <Link href="/" className={`p-2 rounded-lg flex items-center gap-1.5 text-sm font-medium transition-colors ${
-            pathname === '/' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'
-          }`}>
-            <PlusCircle size={18} />
-            <span className="hidden sm:inline">Создать</span>
-          </Link>
-
-          <Link href="/history" className={`p-2 rounded-lg flex items-center gap-1.5 text-sm font-medium transition-colors ${
-            pathname === '/history' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'
-          }`}>
-            <ClipboardList size={18} />
-            <span className="hidden sm:inline">История</span>
-          </Link>
-
-          {isReviewer && (
-            <Link href="/reviewer" className={`p-2 rounded-lg flex items-center gap-1.5 text-sm font-medium transition-colors ${
-              pathname === '/reviewer' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'
+        <nav className="flex items-center gap-0.5">
+          {[
+            { href: '/', icon: <PlusCircle size={18} />, label: 'Создать' },
+            { href: '/history', icon: <ClipboardList size={18} />, label: 'История' },
+            ...(isReviewer ? [{ href: '/reviewer', icon: <ShieldCheck size={18} />, label: 'Проверка' }] : []),
+          ].map(({ href, icon, label }) => (
+            <Link key={href} href={href} className={`px-2.5 py-1.5 rounded-lg flex items-center gap-1.5 text-sm font-medium transition-colors ${
+              pathname === href
+                ? 'bg-primary text-primary-foreground'
+                : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
             }`}>
-              <ShieldCheck size={18} />
-              <span className="hidden sm:inline">Проверка</span>
+              {icon}
+              <span className="hidden sm:inline">{label}</span>
             </Link>
-          )}
+          ))}
 
           <ThemeToggle />
 
-          <button onClick={handleSignOut} className="p-2 rounded-lg text-muted-foreground hover:text-foreground transition-colors" title="Выйти">
+          <button onClick={handleSignOut} className="px-2 py-1.5 rounded-lg text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors" title="Выйти">
             <LogOut size={18} />
           </button>
         </nav>
