@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { ClipboardList, LogOut, PlusCircle, ShieldCheck } from 'lucide-react'
 import { ThemeToggle } from '@/components/theme-toggle'
+import { BahandiLogo } from '@/components/bahandi-logo'
 
 interface User {
   id: string
@@ -28,7 +29,9 @@ export function NavBar({ user }: { user: User }) {
   return (
     <header className="border-b border-border bg-card sticky top-0 z-10">
       <div className="max-w-lg mx-auto px-4 h-14 flex items-center justify-between">
-        <span className="font-bold text-base">Списания</span>
+        <Link href="/" className="shrink-0" aria-label="Bahandi">
+          <BahandiLogo size="sm" />
+        </Link>
 
         <nav className="flex items-center gap-1">
           <Link href="/" className={`p-2 rounded-lg flex items-center gap-1.5 text-sm font-medium transition-colors ${
