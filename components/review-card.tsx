@@ -49,8 +49,9 @@ export function ReviewCard({ item }: { item: WriteOff }) {
           <PhotoGrid photoUrl={item.photoUrl} />
 
           {item.reviewerNote && (
-            <div className="bg-muted rounded-lg px-3 py-2 text-sm">
-              <span className="font-medium">Примечание: </span>{item.reviewerNote}
+            <div className="bg-secondary rounded-xl border border-border px-3 py-2 text-sm">
+              <span className="font-semibold text-foreground">Примечание: </span>
+              <span className="text-muted-foreground">{item.reviewerNote}</span>
             </div>
           )}
 

@@ -81,7 +81,7 @@ const OUTLETS = [
   'Bahandi Петрова — Астана, ул. Алексея Петрова, 22г (1 этаж)',
   'Bahandi Мерей — Алматы, проспект Суюнбая, 2/Б (киоск)',
   'Bahandi Тастак — Алматы, Тастак-3 микрорайон, ул. Толе би, 229/3 (киоск)',
-  'Bahandi Вес��овка — Алматы, Коктем-2 микрорайон, 22 (киоск)',
+  'Bahandi Вес����овка — Алматы, Коктем-2 микрорайон, 22 (киоск)',
   'Bahandi Айнабулак — Алматы, Айнабулак 2 микрорайон, 82/4 (киоск)',
   'Bahandi Глобус Фудкорт — Алматы, Абая проспект, 109в (ТРЦ Globus, 2 этаж)',
   'Bahandi Динара — Шымкент, проспект Республики, 40/1 (1 этаж)',
@@ -300,10 +300,10 @@ export function WriteOffForm() {
         <div className="grid grid-cols-2 gap-2">
           {(['no_deduction', 'with_deduction'] as const).map(type => (
             <button key={type} type="button" onClick={() => setDeductionType(type)}
-              className={`py-3 px-4 rounded-lg border text-sm font-medium transition-colors ${
+              className={`py-3 px-4 rounded-xl border text-sm font-medium transition-colors ${
                 deductionType === type
                   ? 'bg-primary text-primary-foreground border-primary'
-                  : 'bg-background border-border text-foreground'
+                  : 'bg-card border-border text-foreground hover:bg-secondary'
               }`}>
               {type === 'no_deduction' ? 'Без удержания' : 'С удержанием'}
             </button>
