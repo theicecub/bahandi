@@ -1,7 +1,7 @@
 const STATUS_MAP = {
-  pending:  { label: 'На проверке', className: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-500/15 dark:text-yellow-300' },
-  approved: { label: 'Подтверждено', className: 'bg-green-100 text-green-800 dark:bg-green-500/15 dark:text-green-300' },
-  rejected: { label: 'Отклонено',   className: 'bg-red-100 text-red-800 dark:bg-red-500/15 dark:text-red-300' },
+  pending:  { label: 'На проверке', className: 'bg-amber-100 text-amber-800 dark:bg-amber-500/20 dark:text-amber-300' },
+  approved: { label: 'Подтверждено', className: 'bg-accent/15 text-accent dark:bg-accent/20 dark:text-accent' },
+  rejected: { label: 'Отклонено',   className: 'bg-destructive/10 text-destructive dark:bg-destructive/20 dark:text-red-400' },
 } as const
 
 type Status = keyof typeof STATUS_MAP

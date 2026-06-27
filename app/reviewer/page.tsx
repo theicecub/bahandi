@@ -4,6 +4,7 @@ import { NavBar } from '@/components/nav-bar'
 import { ReviewCard } from '@/components/review-card'
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
+import { ShieldCheck } from 'lucide-react'
 
 export default async function ReviewerPage() {
   const session = await auth.api.getSession({ headers: await headers() })
@@ -47,7 +48,7 @@ export default async function ReviewerPage() {
 
         {items.length === 0 && (
           <div className="text-center py-16 text-muted-foreground">
-            <p className="text-4xl mb-3">✅</p>
+            <ShieldCheck size={40} className="mx-auto mb-3 opacity-40" />
             <p>Заявок пока нет</p>
           </div>
         )}

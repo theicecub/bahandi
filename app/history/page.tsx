@@ -5,6 +5,7 @@ import { PhotoGrid } from '@/components/photo-grid'
 import { StatusBadge } from '@/components/status-badge'
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
+import { ClipboardList } from 'lucide-react'
 
 export default async function HistoryPage() {
   const session = await auth.api.getSession({ headers: await headers() })
@@ -20,7 +21,7 @@ export default async function HistoryPage() {
 
         {items.length === 0 ? (
           <div className="text-center py-16 text-muted-foreground">
-            <p className="text-4xl mb-3">📋</p>
+            <ClipboardList size={40} className="mx-auto mb-3 opacity-40" />
             <p>Заявок пока нет</p>
           </div>
         ) : (
@@ -47,8 +48,9 @@ export default async function HistoryPage() {
                 </div>
 
                 {item.reviewerNote && (
-                  <div className="mt-3 bg-muted rounded-lg px-3 py-2 text-sm">
-                    <span className="font-medium">Ответ проверяющего: </span>{item.reviewerNote}
+                  <div className="mt-3 bg-secondary rounded-xl px-3 py-2 text-sm border border-border">
+                    <span className="font-semibold text-foreground">Ответ проверяющего: </span>
+                    <span className="text-muted-foreground">{item.reviewerNote}</span>
                   </div>
                 )}
 
