@@ -34,9 +34,10 @@ export function NavBar({ user }: { user: User }) {
           <Image
             src={logo}
             alt="Логотип компании"
-            className="h-8 w-14 object-contain"
+            className="h-10 w-20 object-contain"
             priority
           />
+          <span className="font-bold text-base whitespace-nowrap">Списания</span>
         </Link>
 
         <nav className="flex items-center gap-1">

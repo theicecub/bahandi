@@ -48,7 +48,7 @@ export function AuthForm({ mode }: { mode: 'sign-in' | 'sign-up' }) {
           <Image
             src={logo}
             alt="Логотип компании"
-            className="mx-auto mb-4 h-14 w-auto object-contain"
+            className="mx-auto mb-4 h-16 w-auto object-contain"
             priority
           />
           <h1 className="text-2xl font-bold text-foreground">Списания</h1>
