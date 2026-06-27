@@ -4,6 +4,7 @@ import { authClient } from '@/lib/auth-client'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { ClipboardList, LogOut, PlusCircle, ShieldCheck } from 'lucide-react'
+import { ThemeToggle } from '@/components/theme-toggle'
 
 interface User {
   id: string
@@ -52,6 +53,8 @@ export function NavBar({ user }: { user: User }) {
               <span className="hidden sm:inline">Проверка</span>
             </Link>
           )}
+
+          <ThemeToggle />
 
           <button onClick={handleSignOut} className="p-2 rounded-lg text-muted-foreground hover:text-foreground transition-colors" title="Выйти">
             <LogOut size={18} />

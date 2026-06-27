@@ -73,7 +73,7 @@ export function WriteOffForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       {success && (
-        <div className="bg-green-50 border border-green-200 text-green-800 rounded-lg px-4 py-3 text-sm font-medium">
+        <div className="bg-green-50 border border-green-200 text-green-800 rounded-lg px-4 py-3 text-sm font-medium dark:bg-green-500/15 dark:border-green-500/25 dark:text-green-300">
           Заявка отправлена на проверку
         </div>
       )}
