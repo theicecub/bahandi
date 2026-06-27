@@ -37,7 +37,6 @@ export function NavBar({ user }: { user: User }) {
             className="h-8 w-14 object-contain"
             priority
           />
-          <span className="font-bold text-base truncate">Списания</span>
         </Link>
 
         <nav className="flex items-center gap-1">
