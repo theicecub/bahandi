@@ -2,7 +2,6 @@
 
 import { authClient } from '@/lib/auth-client'
 import { ThemeToggle } from '@/components/theme-toggle'
-import { BahandiLogo } from '@/components/bahandi-logo'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -43,8 +42,7 @@ export function AuthForm({ mode }: { mode: 'sign-in' | 'sign-up' }) {
       </div>
 
       <div className="w-full max-w-sm">
-        <div className="flex flex-col items-center text-center mb-8">
-          <BahandiLogo className="mb-5" />
+        <div className="text-center mb-8">
           <h1 className="text-2xl font-bold text-foreground">Списания</h1>
           <p className="text-muted-foreground text-sm mt-1">
             {mode === 'sign-in' ? 'Войдите в аккаунт' : 'Создайте аккаунт'}
