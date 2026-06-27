@@ -34,7 +34,7 @@ export function NavBar({ user }: { user: User }) {
           <Image
             src={logo}
             alt="Логотип компании"
-            className="h-20 w-25 object-contain"
+            className="h-30 w-25 object-contain"
             priority
           />
         </Link>
