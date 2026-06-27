@@ -1,10 +1,12 @@
 'use client'
 
 import { authClient } from '@/lib/auth-client'
+import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { ClipboardList, LogOut, PlusCircle, ShieldCheck } from 'lucide-react'
 import { ThemeToggle } from '@/components/theme-toggle'
+import logo from './logo.png'
 
 interface User {
   id: string
@@ -28,7 +30,15 @@ export function NavBar({ user }: { user: User }) {
   return (
     <header className="border-b border-border bg-card sticky top-0 z-10">
       <div className="max-w-lg mx-auto px-4 h-14 flex items-center justify-between">
-        <span className="font-bold text-base">Списания</span>
+        <Link href="/" className="flex items-center gap-2 min-w-0">
+          <Image
+            src={logo}
+            alt="Логотип компании"
+            className="h-8 w-14 object-contain"
+            priority
+          />
+          <span className="font-bold text-base truncate">Списания</span>
+        </Link>
 
         <nav className="flex items-center gap-1">
           <Link href="/" className={`p-2 rounded-lg flex items-center gap-1.5 text-sm font-medium transition-colors ${

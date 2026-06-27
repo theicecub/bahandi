@@ -1,10 +1,12 @@
 'use client'
 
 import { authClient } from '@/lib/auth-client'
+import Image from 'next/image'
 import { ThemeToggle } from '@/components/theme-toggle'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import logo from './logo.png'
 
 export function AuthForm({ mode }: { mode: 'sign-in' | 'sign-up' }) {
   const router = useRouter()
@@ -43,6 +45,12 @@ export function AuthForm({ mode }: { mode: 'sign-in' | 'sign-up' }) {
 
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
+          <Image
+            src={logo}
+            alt="Логотип компании"
+            className="mx-auto mb-4 h-14 w-auto object-contain"
+            priority
+          />
           <h1 className="text-2xl font-bold text-foreground">Списания</h1>
           <p className="text-muted-foreground text-sm mt-1">
             {mode === 'sign-in' ? 'Войдите в аккаунт' : 'Создайте аккаунт'}
